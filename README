@@ -1,0 +1,67 @@
+# Industry AI Nurture — Scott Benedetti
+
+Personalized outbound email generation for Scott Benedetti's 10-step nurture sequence. Pulls contact data from HubSpot, scrapes company websites for personalization signals, and uses the Anthropic API (Claude) to generate industry-specific emails written in Scott's voice.
+
+---
+
+## What It Does
+
+- Receives contact jobs from HubSpot via `/enqueue`
+- Resolves the contact's industry to one of 20+ vertical personas
+- Scrapes the company's website for news, blog content, and thought leadership hooks
+- Generates a subject line and email body via Claude Sonnet, personalized to the specific company and sequence step
+- Writes results back to HubSpot contact properties (`industry_ai_nurture_*`)
+- Processes up to 8 jobs concurrently with retry logic and rate limit handling
+
+---
+
+## Sequence Map
+
+| Step | Pillar | Service Focus |
+|------|--------|---------------|
+| 1 | AI Systems & Automation | AI Agents and Automation |
+| 2 | AI Strategy & Innovation | AI Roadmap Accelerator |
+| 3 | AI Intelligence & Personalization | AI-Driven Personalization |
+| 4 | AI Systems & Automation | Marketing Operations Automation |
+| 5 | Strategy | Revenue Marketing Transformation |
+| 6 | Operations | Revenue Operations |
+| 7 | Technology Consulting | HubSpot Services |
+| 8 | AI Intelligence | Data and Decision Intelligence |
+| 9 | Managed Services & Creative | Demand Generation |
+| 10 | Revenue Marketing Transformation | Meeting Close |
+
+---
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `HUBSPOT_TOKEN` | HubSpot private app token |
+| `ANTHROPIC_API_KEY` | Anthropic API key |
+| `PORT` | Server port (default: 3000) |
+
+---
+
+## Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /` | Health check and queue stats |
+| `GET /dashboard` | Live processing dashboard |
+| `GET /errors` | Permanent failure log viewer |
+| `POST /enqueue` | Submit a contact job |
+
+---
+
+## HubSpot Properties Written
+
+- `industry_ai_nurture_subject_line_em1` – `em10`
+- `industry_ai_nurture_em1` – `em10` (HTML)
+- `industry_ai_nurture_claude_text_em1` – `em9` (plain text, used for prior-email deduplication)
+- `ai_email_step_status` (IN_PROGRESS / SENT / RETRY_PENDING / FAILED)
+
+---
+
+## Calendar Link
+
+All emails CTA to: `https://meetings.hubspot.com/scott-benedetti`
