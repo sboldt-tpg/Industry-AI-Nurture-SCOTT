@@ -1164,6 +1164,7 @@ async function runClaude(job) {
     hs_analytics_num_page_views = ''
   } = job;
 
+  const salutation = firstname.trim() || 'Hi there';
   const persona = resolveIndustryPersona(industry);
 
   const IntentContext = hs_intent_signals_enabled === "true"
@@ -1250,7 +1251,7 @@ ${openingStyleInstruction}
     ? `RE-ENGAGEMENT INSTRUCTION:\n${stepConfig.reEngagementNote}`
     : '';
 
-  const userContent = `You are Scott Benedetti, Partner and Executive Vice President of The Pedowitz Group (TPG), writing EMAIL ${SEQUENCE_STEP} of 10 in a personalized outbound nurture sequence to ${firstname} at ${company}.
+  const userContent = `You are Scott Benedetti, Partner and Executive Vice President of The Pedowitz Group (TPG), writing EMAIL ${SEQUENCE_STEP} of 10 in a personalized outbound nurture sequence to ${salutation} at ${company}.
 
 The Pedowitz Group (TPG) is THE Revenue Marketing™ consulting firm. 1,300+ client engagements. $25B+ in marketing-sourced revenue generated. TPG's five service pillars:
 1. AI SERVICES: AI Roadmap Accelerator, AI Agents and Automation, Marketing Operations Automation, AI-Driven Personalization, Data and Decision Intelligence
@@ -1313,7 +1314,7 @@ WRITE THE EMAIL
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 FORMAT:
 - Subject: 8 words or fewer. No dashes or hyphens.
-- Salutation on its own line: "${firstname},"
+- Salutation on its own line: "${salutation},"
 - One blank line after salutation.
 - Body: ${stepConfig.wordCount} words. Short paragraphs separated by ONE blank line.
 - No bullets. No signature. No sign-off.
