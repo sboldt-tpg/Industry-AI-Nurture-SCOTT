@@ -137,7 +137,6 @@ const SEQUENCE_MAP = [
     ctaType: "meeting",
     wordCount: "75 to 110",
     openingStyle: "observation",
-    bypassCache: false,
     reEngagementNote: null
   },
   {
@@ -152,7 +151,6 @@ const SEQUENCE_MAP = [
     ctaType: "meeting",
     wordCount: "75 to 110",
     openingStyle: "observation",
-    bypassCache: false,
     reEngagementNote: null
   },
   {
@@ -167,7 +165,6 @@ const SEQUENCE_MAP = [
     ctaType: "content",
     wordCount: "40 to 65",
     openingStyle: "question",
-    bypassCache: false,
     reEngagementNote: null
   },
   {
@@ -182,7 +179,6 @@ const SEQUENCE_MAP = [
     ctaType: "meeting",
     wordCount: "40 to 65",
     openingStyle: "question",
-    bypassCache: false,
     reEngagementNote: null
   },
   {
@@ -197,7 +193,6 @@ const SEQUENCE_MAP = [
     ctaType: "content",
     wordCount: "40 to 65",
     openingStyle: "question",
-    bypassCache: false,
     reEngagementNote: "This is email 5 of 10. Acknowledge in one confident sentence — not apologetically — that you have sent a few notes and have not heard back. Then move on without dwelling on it. Do not apologize. Do not beg."
   },
   {
@@ -212,7 +207,6 @@ const SEQUENCE_MAP = [
     ctaType: "reply",
     wordCount: "40 to 65",
     openingStyle: "question",
-    bypassCache: true,
     reEngagementNote: null
   },
   {
@@ -227,7 +221,6 @@ const SEQUENCE_MAP = [
     ctaType: "content",
     wordCount: "40 to 65",
     openingStyle: "question",
-    bypassCache: true,
     reEngagementNote: null
   },
   {
@@ -242,7 +235,6 @@ const SEQUENCE_MAP = [
     ctaType: "reply",
     wordCount: "40 to 65",
     openingStyle: "question",
-    bypassCache: true,
     reEngagementNote: "This is email 8 of 10. In one sentence, name the silence directly and confidently — something like 'I have sent a few notes without hearing back' — then pivot immediately to a single sharp question that invites a reply. No apology. No guilt."
   },
   {
@@ -257,7 +249,6 @@ const SEQUENCE_MAP = [
     ctaType: "meeting",
     wordCount: "40 to 65",
     openingStyle: "question",
-    bypassCache: true,
     reEngagementNote: null
   },
   {
@@ -272,7 +263,6 @@ const SEQUENCE_MAP = [
     ctaType: "meeting",
     wordCount: "40 to 65",
     openingStyle: "question",
-    bypassCache: true,
     reEngagementNote: "This is the final email — email 10 of 10. Name that directly. Tell them this is your last note. Make the ask warm and specific: 20 minutes, and tell them exactly what they will walk away with. No guilt, no pressure. Just a clean, confident close."
   }
 ];
@@ -1079,24 +1069,20 @@ async function extractTitles(url) {
 // COMPANY RESEARCH — PERSISTENT DOMAIN CACHE
 // bypassCache: forces a fresh scrape for late-sequence emails (steps 6+)
 // =============================
-async function getCompanyContent(website, bypassCache = false) {
+async function getCompanyContent(website) {
   const baseUrl = normalizeUrl(website);
   if (!baseUrl) return { newsBlock: null, blogBlock: null };
   let domain = '';
   try { domain = new URL(baseUrl).hostname.replace(/^www\./, ''); } catch { return { newsBlock: null, blogBlock: null }; }
   if (BLOCKED_DOMAINS.has(domain)) { console.log(`🚫 Skipping: ${domain}`); return { newsBlock: null, blogBlock: null }; }
 
-  if (!bypassCache && domainCache.has(domain)) {
+  if (domainCache.has(domain)) {
     const cached = domainCache.get(domain);
     if (Date.now() - cached.cachedAt < CACHE_TTL_MS) {
       console.log(`💾 Cache hit: ${domain}`);
       return { newsBlock: cached.newsBlock, blogBlock: cached.blogBlock };
     }
     console.log(`♻️ Cache expired for ${domain} — re-scraping`);
-  }
-
-  if (bypassCache) {
-    console.log(`🔄 Cache bypass for ${domain} — forcing fresh scrape`);
   }
 
   const newsPaths = ['/news', '/press', '/newsroom', '/press-releases', '/company-news', '/about/news', '/awards', '/recognition'];
@@ -1204,7 +1190,7 @@ async function runClaude(job) {
   let companyContentBlock = null;
   if (website) {
     try {
-      const { newsBlock, blogBlock } = await getCompanyContent(website, stepConfig.bypassCache);
+      const { newsBlock, blogBlock } = await getCompanyContent(website);
       companyNewsBlock = newsBlock;
       companyContentBlock = blogBlock;
     } catch (err) {
