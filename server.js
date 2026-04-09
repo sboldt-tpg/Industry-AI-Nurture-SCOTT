@@ -10,8 +10,8 @@ app.use(express.json());
 // CONFIG
 // =============================
 const MAX_SUBJECT_RETRIES = 3;
-const PROCESS_INTERVAL_MS = 1000;
-const CONCURRENCY = 8;
+const PROCESS_INTERVAL_MS = 500;
+const CONCURRENCY = 12;
 
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
