@@ -1327,6 +1327,7 @@ VOICE:
 - After the opening, write like a smart peer talking to another smart peer. Short sentences. Contractions. Real.
 - It's fine to start a sentence with "And" or "But" for rhythm.
 - Never use: leverage, impactful, holistic, synergy, robust, utilize, cutting-edge, or any word that belongs in a press release.
+- Never use the word "agents" or "AI agents" as a standalone term. Instead describe what the technology actually does in plain language. Examples: "automated systems that watch for buying signals and route the right follow-up", "workflows that score intent and surface the right contacts before your team has to go looking", "systems that connect your data and trigger the right action automatically." The reader should understand what it does without needing to know what it's called.
 - One industry benchmark stat woven naturally into the prose. Drop it casually, the way you'd mention it in conversation. Not prefaced with "According to."
 - The CTA should feel like a genuine ask, not a sales close. "Worth 20 minutes?" is better than "I'd love to schedule time to discuss."
 
