@@ -106,6 +106,23 @@ const BLOCKED_DOMAINS = new Set([
 ]);
 
 // =============================
+// AEO RESOURCE LINK HELPERS
+// Rotated across AEO-active steps:
+//   aeoGuideLink()        -> steps 1, 2, 3  (concept introduction phase)
+//   contentAnalyzerLink() -> steps 5, 7, 9  (solution / diagnostic phase)
+// =============================
+const LINK_STYLE = 'font-weight:bold;text-decoration:underline;color:#A2CF23;';
+const AEO_GUIDE_HREF = 'https://www.pedowitzgroup.com/the-complete-guide-to-answer-engine-optimization-aeo';
+const CONTENT_ANALYZER_HREF = 'https://www.pedowitzgroup.com/content-analyzer';
+
+function aeoGuideLink(anchor) {
+  return `<a href="${AEO_GUIDE_HREF}" style="${LINK_STYLE}">${anchor}</a>`;
+}
+function contentAnalyzerLink(anchor) {
+  return `<a href="${CONTENT_ANALYZER_HREF}" style="${LINK_STYLE}">${anchor}</a>`;
+}
+
+// =============================
 // TPG 10-STEP SEQUENCE MAP
 // =============================
 // IMPROVEMENTS APPLIED:
@@ -113,8 +130,12 @@ const BLOCKED_DOMAINS = new Set([
 //   - Step 1: ctaType changed from 'meeting' to 'reply' (cold open; earn the ask)
 //   - Steps 1-2: word count tightened to 60-85 (forces sharper writing)
 //   - Steps 3,5,7,9: aeoContext added (buyer visibility / AEO angle)
+//   - Steps 1,2: aeoContext added (opening hook and pain framing)
 //   - All other steps: aeoContext = null (suppresses AEO in prompt)
 //   - avoidPhrases added per step (enforced in prompt, prevents clichés)
+//   - AEO resource links rotated in:
+//       Steps 1, 2, 3 -> AEO Guide (introducing the concept)
+//       Steps 5, 7, 9 -> Content Analyzer (solution/diagnostic phase)
 // =============================
 const SEQUENCE_MAP = [
   {
@@ -125,14 +146,11 @@ const SEQUENCE_MAP = [
     offer: "AI Agent Discovery Tool",
     offerUrl: "https://www.pedowitzgroup.com/agentic-ai",
     angle: "pipeline_predictability",
-    // UPDATED: AEO opens, pipeline is the consequence
     talkingPoint: "Open with the buyer visibility gap (see AEO context below) — that's the hook. Then pivot: the reason pipeline feels unpredictable right now isn't just bad leads or misaligned teams. It's that a growing share of the buying process is happening in a channel most marketing teams have never had to compete in. Your sales team spending 40% of their time on non-selling work is a symptom of a system that was built for a different buyer journey. The teams pulling ahead have fixed both: they're visible where buyers research, and they've removed the overhead that slows revenue down.",
-    // UPDATED: reply CTA for cold open — earn the meeting ask at step 2
     ctaType: "reply",
     wordCount: "60 to 85",
     openingStyle: "observation",
     reEngagementNote: null,
-    // AEO OPENING HOOK — lead with visibility gap, pipeline angle follows as the consequence
     aeoContext: `AEO / BUYER VISIBILITY — OPENING HOOK (this is the first thing the prospect reads after the salutation):
 
 THE EMAIL MUST BE STRUCTURED IN THIS EXACT ORDER:
@@ -150,7 +168,11 @@ THE EMAIL MUST BE STRUCTURED IN THIS EXACT ORDER:
 
 CRITICAL: If company blog/news signals are available, do NOT open with "I saw/I noticed" as the very first line. The visibility hook comes first. The "I noticed" line is the personalization bridge between the hook and the pipeline pivot.
 
-Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain language only. Name the problem vividly. Do not pitch a solution.`,
+Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain language only. Name the problem vividly. Do not pitch a solution.
+
+RESOURCE LINK — OPTIONAL: If a value-add fits naturally before the reply question, include one hyperlink to the AEO guide as a plain reading resource — no pitch attached. Anchor text should be a short natural phrase like "worth a read" or "quick take on it":
+${aeoGuideLink('[short phrase]')}
+Only include if it fits naturally. Do not force it.`,
     avoidPhrases: ["execution to strategy", "unlock", "revenue engine", "scale your", "transform your", "holistic", "leverage", "robust", "cutting-edge", "impactful", "synergy", "utilize"]
   },
   {
@@ -161,16 +183,18 @@ Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain langua
     offer: "AI Readiness Assessment",
     offerUrl: "https://www.pedowitzgroup.com/ai-assessment",
     angle: "martech_roi",
-    // UPDATED: leads with the waste/sunk cost angle, not the solution
     talkingPoint: "Most companies are running 15 to 20 MarTech tools and getting real value from maybe 8. The rest were bought with a business case that made sense at the time. Now they're just contract renewals nobody wants to own. The answer isn't more tools. It's a prioritized roadmap that starts with what you already have and connects every investment to a revenue outcome — not a 90-day experiment that fades when the champion leaves.",
     ctaType: "meeting",
     wordCount: "60 to 85",
     openingStyle: "observation",
     reEngagementNote: null,
-    // AEO PAIN FRAMING — woven into the roadmap/waste angle as the missing channel
     aeoContext: `AEO / BUYER VISIBILITY — PAIN FRAMING (one to two sentences, woven naturally into the body — not the opening, not a standalone paragraph):
 The roadmap problem has a new wrinkle most AI investment plans don't account for: buyer discovery is shifting to AI-generated answers. ChatGPT, Perplexity, and Google's AI Overview are now summarizing vendor categories for buyers before they search, visit a site, or fill out a form. Most AI roadmaps being built today are optimizing for channels buyers are already leaving.
-Weave this as a sharpening observation inside the body — it makes the "bad roadmap" pain more specific and more urgent without changing the email's thesis. Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain language only. Do not develop this into a separate pitch — one observation, then move on.`,
+Weave this as a sharpening observation inside the body — it makes the "bad roadmap" pain more specific and more urgent without changing the email's thesis. Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain language only. Do not develop this into a separate pitch — one observation, then move on.
+
+RESOURCE LINK — INCLUDE ONCE: After the buyer visibility observation, add a single hyperlink to the AEO guide as a value-add. Frame it as something worth reading, not a pitch. Short anchor phrase — "here's a quick read on it", "we put together a guide", or similar:
+${aeoGuideLink('[short phrase]')}
+Then move directly to the meeting CTA.`,
     avoidPhrases: ["execution to strategy", "unlock", "transform", "holistic", "leverage", "robust", "cutting-edge", "impactful", "synergy", "utilize", "journey", "revenue engine"]
   },
   {
@@ -181,20 +205,22 @@ Weave this as a sharpening observation inside the body — it makes the "bad roa
     offer: "Revenue Marketing Maturity Assessment",
     offerUrl: "https://www.pedowitzgroup.com/revenue-marketing-maturity-assessment",
     angle: "lead_quality",
-    // UPDATED: sharper stat angle, problem-first
     talkingPoint: "Your best prospects are doing their research right now and your marketing team has no idea. They're reading your competitors' case studies, comparing positioning, and forming opinions — and they will never fill out a form. By the time they talk to sales, 70 to 80% of the decision is already made. The companies winning that invisible research phase are the ones whose content shows up with the right answer at the right moment.",
     ctaType: "content",
     wordCount: "40 to 65",
     openingStyle: "question",
     reEngagementNote: null,
-    // AEO PRIMARY — fully developed thesis; prospect has now seen the concept twice, ready for depth
     aeoContext: `AEO / BUYER VISIBILITY — PRIMARY (this is the email where the concept gets fully named and developed):
 By now the prospect has seen a reference to AI-generated buyer research in emails 1 and 2. This email deepens it into a full argument: personalization only works if you can reach the buyer — but a growing share of buyers are forming opinions in AI-generated answers before they ever click a result, visit a site, or raise their hand. If your brand, your point of view, and your content aren't showing up in those answers, you're invisible for the part of the journey that matters most.
 
-This is the primary AEO email. The concept should be developed across two to three sentences, positioned as the explanation for why "invisible buyers" is getting worse, not better. Lead with the phenomenon, connect it to the personalization gap, and let the content offer (Revenue Marketing Maturity Assessment) feel like the logical next step for a team that wants to understand where they stand.
+This is the primary AEO email. The concept should be developed across two to three sentences, positioned as the explanation for why "invisible buyers" is getting worse, not better. Lead with the phenomenon, connect it to the personalization gap, and let the content offer feel like the logical next step for a team that wants to understand where they stand.
 
-Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Describe the mechanism in plain language — what buyers are doing, what marketing teams are missing, and what it costs them.`,
-    avoidPhrases: ["70 to 80 percent", "meet them in the moment", "right message right channel", "unlock", "transform", "leverage", "journey", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize", "88% of B2B companies are competing", "competing for the remaining"]
+Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Describe the mechanism in plain language — what buyers are doing, what marketing teams are missing, and what it costs them.
+
+RESOURCE LINK — MANDATORY FOR THIS STEP: This is the primary AEO email and the AEO Guide is the ideal content offer here. Include the AEO Guide link alongside or instead of the Revenue Marketing Maturity Assessment — whichever fits more naturally. Present it as the resource that helps them understand the buyer visibility gap you just described:
+${aeoGuideLink('[short phrase]')}
+Make it feel like the logical next step for a reader who just got the concept for the first time.`,
+    avoidPhrases: ["70 to 80 percent", "meet them in the moment", "right message right channel", "unlock", "transform", "leverage", "journey", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize"]
   },
   {
     step: 4,
@@ -204,13 +230,11 @@ Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Describe the
     offer: "AI Project Prioritization Tool",
     offerUrl: "https://www.pedowitzgroup.com/tpg-ai-project-prioritization",
     angle: "team_capacity",
-    // UPDATED: quantified waste angle, no 'execution to strategy' cliché, explicit differentiation from step 1
     talkingPoint: "This email is about the hidden labor cost inside marketing ops — not pipeline signals (covered in email 1), but the manual work that happens before any campaign touches a prospect: lead routing, data hygiene, segmentation, campaign QA. Most marketing ops teams are running at 120% capacity doing work that should not require a human. The question is how much of that overhead is actually scheduled to go away — and what your team could do with that time instead.",
     ctaType: "meeting",
     wordCount: "40 to 65",
     openingStyle: "question",
     reEngagementNote: null,
-    // No AEO — suppress explicitly
     aeoContext: null,
     avoidPhrases: ["execution to strategy", "from cost center to", "unlock", "transform", "leverage", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize", "revenue engine", "scale your", "journey"]
   },
@@ -227,10 +251,13 @@ Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Describe the
     wordCount: "40 to 65",
     openingStyle: "question",
     reEngagementNote: "This is email 5 of 10. Acknowledge in one confident sentence — not apologetically — that you have sent a few notes and have not heard back. Then move on without dwelling on it. Do not apologize. Do not beg.",
-    // AEO COMPETITIVE ESCALATION — the leaders are already doing this; one sharp sentence
     aeoContext: `AEO / BUYER VISIBILITY — COMPETITIVE ESCALATION (one sentence, placed as a sharp aside in the body — not the opening, not a paragraph):
 The Revenue Marketing leaders pulling ahead right now aren't just connecting strategy, technology, and operations — they're also making sure their brand shows up when a buyer asks an AI tool to recommend vendors in their space. The companies building RM6 maturity are, almost without exception, the same ones whose content surfaces in AI-generated answers. One sentence. Make the prospect feel like their competitors are already there. Do not develop further.
-Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain language only.`,
+Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain language only.
+
+RESOURCE LINK — OPTIONAL: After the competitive escalation sentence, add the Content Analyzer as a light secondary mention — frame it as a quick way to see where their content stands right now:
+${contentAnalyzerLink('[short phrase]')}
+Only include if it fits without slowing the email down. The primary CTA is the Revenue Marketing Index.`,
     avoidPhrases: ["unlock", "transform", "leverage", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize", "journey", "revenue engine", "cost center"]
   },
   {
@@ -246,7 +273,6 @@ Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain langua
     wordCount: "40 to 65",
     openingStyle: "question",
     reEngagementNote: null,
-    // Suppress AEO entirely in this step
     aeoContext: null,
     avoidPhrases: ["unlock", "transform", "leverage", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize", "journey", "AI search", "AEO", "AXO", "answer engine", "buyer visibility"]
   },
@@ -263,17 +289,20 @@ Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain langua
     wordCount: "40 to 65",
     openingStyle: "question",
     reEngagementNote: null,
-    // AEO DIAGNOSTIC OFFER — first step where AXO can be named; conditional on engagement signals
     aeoContext: `AEO / BUYER VISIBILITY — DIAGNOSTIC OFFER (this is the payoff for the arc started at step 1):
 The prospect has now seen the buyer visibility problem framed as pain (emails 1 and 2), developed as thesis (email 3), and escalated competitively (email 5). This is the first email where the solution can be named.
 
 HubSpot architecture, content structure, and CRM signals all feed into whether a brand surfaces in AI-generated answers. Most HubSpot configurations were never built with this in mind — they were built for search and form fills, not for the AI-summarized buyer journey.
 
 CONDITIONAL OFFER:
-- If intent signals are ACTIVE or the prospect has visited the TPG website 5 or more times: name the AXO Diagnostic explicitly. "TPG's AXO diagnostic scores how visible your brand is across ChatGPT, Perplexity, Claude, and Gemini — and what it would take to improve it." Link as a natural anchor: <a href="https://www.pedowitzgroup.com/axo" style="font-weight:bold;text-decoration:underline;color:#A2CF23;">AXO diagnostic</a>
+- If intent signals are ACTIVE or the prospect has visited the TPG website 5 or more times: name the AXO Diagnostic explicitly. "TPG's AXO diagnostic scores how visible your brand is across ChatGPT, Perplexity, Claude, and Gemini — and what it would take to improve it." Link as a natural anchor: <a href="https://www.pedowitzgroup.com/axo" style="${LINK_STYLE}">AXO diagnostic</a>
 - If no strong intent signals: describe the visibility gap and connect it to HubSpot configuration without naming AXO. Let the concept land; the diagnostic can surface at the meeting.
 
-Do NOT use the term "AEO" or "answer engine optimization" in the email body. "AXO" is permitted only under the high-intent condition above.`,
+Do NOT use the term "AEO" or "answer engine optimization" in the email body. "AXO" is permitted only under the high-intent condition above.
+
+RESOURCE LINK — INCLUDE ONCE: Whether or not you name the AXO diagnostic, include the Content Analyzer as a secondary resource — frame it as a quick tool to see how their current content would perform in AI-generated summaries:
+${contentAnalyzerLink('[short phrase]')}
+Place it naturally before or after the HubSpot ROI Calculator CTA. One sentence framing, then the link — not a standalone paragraph.`,
     avoidPhrases: ["unlock", "transform", "leverage", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize", "revenue engine", "journey"]
   },
   {
@@ -289,7 +318,6 @@ Do NOT use the term "AEO" or "answer engine optimization" in the email body. "AX
     wordCount: "40 to 65",
     openingStyle: "question",
     reEngagementNote: "This is email 8 of 10. In one sentence, name the silence directly and confidently — something like 'I have sent a few notes without hearing back' — then pivot immediately to a single sharp question that invites a reply. No apology. No guilt.",
-    // Suppress AEO entirely in this step
     aeoContext: null,
     avoidPhrases: ["unlock", "transform", "leverage", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize", "journey", "AI search", "AEO", "AXO", "answer engine", "buyer visibility"]
   },
@@ -306,10 +334,12 @@ Do NOT use the term "AEO" or "answer engine optimization" in the email body. "AX
     wordCount: "40 to 65",
     openingStyle: "question",
     reEngagementNote: null,
-    // AEO CHANNEL DISRUPTION — demand gen is the most disrupted channel; one sharp sentence
     aeoContext: `AEO / BUYER VISIBILITY — CHANNEL DISRUPTION (one sentence maximum, woven naturally into the body):
 Demand gen is built on search and paid channels. But a growing share of buyers are asking AI tools to summarize the vendor landscape before they search anything — which means paid and organic investment is reaching buyers later in their decision, not earlier. One sentence that makes the reader feel like the channel model they're optimizing is already behind where buyers actually are.
-Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain language only. Do not develop further — this is a sharpening aside, not the thesis.`,
+Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain language only. Do not develop further — this is a sharpening aside, not the thesis.
+
+RESOURCE LINK — TIE TO PRIMARY OFFER: The Content Analyzer is already the featured offer for this step. Let the AEO channel disruption sentence flow directly into it as the natural payoff — the buyer visibility observation makes the content audit feel urgent. The CTA should feel like the answer to the disruption you just named:
+${contentAnalyzerLink('[short phrase]')}`,
     avoidPhrases: ["unlock", "transform", "leverage", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize", "revenue engine", "journey"]
   },
   {
@@ -325,7 +355,6 @@ Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain langua
     wordCount: "40 to 65",
     openingStyle: "question",
     reEngagementNote: "This is the final email — email 10 of 10. Name that directly. Tell them this is your last note. Make the ask warm and specific: 20 minutes, and tell them exactly what they will walk away with. No guilt, no pressure. Just a clean, confident close.",
-    // Suppress AEO entirely in this step
     aeoContext: null,
     avoidPhrases: ["unlock", "transform", "leverage", "holistic", "robust", "cutting-edge", "impactful", "synergy", "utilize", "journey", "AI search", "AEO", "AXO", "answer engine", "buyer visibility"]
   }
@@ -335,14 +364,19 @@ Do NOT use the terms "AEO", "AXO", or "answer engine optimization". Plain langua
 // CTA INSTRUCTIONS BY TYPE
 // =============================
 function buildCtaInstructions(ctaType, stepConfig) {
+  // AEO resource links are specified inside aeoContext — flag here to avoid duplication
+  const aeoResourceNote = stepConfig.aeoContext
+    ? `\nNOTE: An AEO resource link (AEO Guide or Content Analyzer) is specified in the AEO CONTEXT section above. Do not duplicate it here if it already appears in the body.`
+    : '';
+
   if (ctaType === 'meeting') {
     return `CALL TO ACTION — MEETING:
 Ask for 20 minutes on the calendar. Tell the prospect exactly what they will get from that conversation. Make the ask feel specific and earned, not generic.
 Calendar link (use a single word or short phrase as the anchor):
-<a href="https://meetings.hubspot.com/scott-benedetti" style="font-weight:bold;text-decoration:underline;color:#A2CF23;">[word or phrase]</a>
+<a href="https://meetings.hubspot.com/scott-benedetti" style="${LINK_STYLE}">[word or phrase]</a>
 
 Also include ONE single-word hyperlink to the featured service:
-<a href="${stepConfig.serviceUrl}" style="font-weight:bold;text-decoration:underline;color:#A2CF23;">[word]</a>`;
+<a href="${stepConfig.serviceUrl}" style="${LINK_STYLE}">[word]</a>${aeoResourceNote}`;
   }
 
   if (ctaType === 'content') {
@@ -350,10 +384,10 @@ Also include ONE single-word hyperlink to the featured service:
 Do NOT ask for a meeting in this email. Instead, drive to the featured offer below as a pure value drop. One sentence framing why it is useful, then the link. No pitch attached to it.
 Offer: ${stepConfig.offer}
 Offer link (use a short natural phrase as the anchor):
-<a href="${stepConfig.offerUrl}" style="font-weight:bold;text-decoration:underline;color:#A2CF23;">[short phrase]</a>
+<a href="${stepConfig.offerUrl}" style="${LINK_STYLE}">[short phrase]</a>
 
 Also include ONE single-word hyperlink to the featured service:
-<a href="${stepConfig.serviceUrl}" style="font-weight:bold;text-decoration:underline;color:#A2CF23;">[word]</a>`;
+<a href="${stepConfig.serviceUrl}" style="${LINK_STYLE}">[word]</a>${aeoResourceNote}`;
   }
 
   if (ctaType === 'reply') {
@@ -361,7 +395,7 @@ Also include ONE single-word hyperlink to the featured service:
 Do NOT ask for a meeting. Do NOT link to an offer. Instead, end the email with ONE single direct question that invites a one-sentence reply. The question should be specific to their industry or situation, not generic. Make it easy to answer. Examples: "Is attribution the biggest gap right now or is it something else?" or "What does your current RevOps setup look like?" Pick the question that fits this specific prospect.
 
 Also include ONE single-word hyperlink to the featured service somewhere naturally in the body:
-<a href="${stepConfig.serviceUrl}" style="font-weight:bold;text-decoration:underline;color:#A2CF23;">[word]</a>`;
+<a href="${stepConfig.serviceUrl}" style="${LINK_STYLE}">[word]</a>${aeoResourceNote}`;
   }
 
   return '';
@@ -802,7 +836,7 @@ const INDUSTRY_PERSONAS = {
       "Sales and marketing are not aligned. That sentence has appeared in every B2B marketing survey for 20 years and it is still true. The cost is 67% of marketing leads being rejected by sales and a pipeline that neither team trusts."
     ],
     aiOpportunity: "AI connects the dots across marketing, sales, and customer success: automating the workflows that slow your team down, personalizing buyer journeys that are too complex to manage manually, and surfacing the revenue signals that manual processes consistently miss until it is too late to act on them.",
-    stats: "Use ONE of these stats — never combine them or paraphrase them together: (1) 88% of B2B companies still operate below Revenue Marketing maturity. (2) Organizations implementing AI across all six RM6 pillars see 25 to 40% improvement in revenue per employee. (3) B2B buyers complete 70 to 80% of their research before ever talking to sales. (4) Companies with true sales and marketing alignment grow revenue 19% faster than unaligned peers. Pick the one that fits the email naturally and use it verbatim. Do not blend or combine these statistics.",
+    stats: "88% of B2B companies still operate below Revenue Marketing maturity. Organizations implementing AI across all six RM6 pillars see 25 to 40% improvement in revenue per employee. The gap between companies that have built a Revenue Marketing operating model and those that have not is widening every quarter.",
     toneNote: "Direct and commercially focused. Lead with a specific observation about this company's situation. Avoid generic B2B framing. If you do not have enough company data to open with something specific, lead with the most provocative industry insight you have.",
     openingHooks: [
       "If they have recent news, a product launch, or a funding event: open with that and connect it to the marketing question it raises.",
@@ -1013,6 +1047,10 @@ app.post("/enqueue", (req, res) => {
 
 // =============================
 // PROCESS JOB
+// OPTIMIZED: status merged into writeResults — saves 2 HubSpot PATCH calls per job
+//            (previously: IN_PROGRESS + writeResults + SENT = 3 calls; now: 1 call)
+// OPTIMIZED: 529 Anthropic overload handler added alongside existing 429 handler
+//            (prevents burning retry counter on transient overload errors)
 // =============================
 async function processJob(job) {
   const key = `${job.contactId}_${job.sequenceStep}`;
@@ -1025,31 +1063,35 @@ async function processJob(job) {
   processingIds.add(key);
 
   try {
-    await updateStatus(job.contactId, "IN_PROGRESS");
     const result = await runClaude(job);
-    await writeResults(job.contactId, result, job.sequenceStep || 1);
-    await updateStatus(job.contactId, "SENT");
+    // Status SENT is written in the same PATCH as the email content
+    await writeResults(job.contactId, result, job.sequenceStep || 1, 'SENT');
 
     completedIds.add(key);
     logCompleted(job.contactId, job.sequenceStep);
-
     console.log(`✅ Completed: ${job.contactId} - Step ${job.sequenceStep}`);
   } catch (err) {
     console.error(`❌ Error for ${job.contactId}:`, err.message);
 
     if (err.response?.status === 429) {
+      // HubSpot rate limit — requeue at front, respect retry-after header
       const retryAfter = (parseInt(err.response.headers['retry-after']) || 60) * 1000;
-      console.log(`⏳ Rate limited, requeuing ${job.contactId} in ${retryAfter}ms`);
+      console.log(`⏳ HubSpot rate limited (429), requeuing ${job.contactId} in ${retryAfter}ms`);
       setTimeout(() => queue.unshift(job), retryAfter);
+    } else if (err.response?.status === 529) {
+      // Anthropic overloaded — requeue at front after 30s without burning retry counter
+      console.log(`⏳ Anthropic overloaded (529), requeuing ${job.contactId} in 30s`);
+      setTimeout(() => queue.unshift(job), 30000);
     } else {
       job.retries = (job.retries || 0) + 1;
       if (job.retries <= 2) {
-        await updateStatus(job.contactId, "RETRY_PENDING");
         queue.push(job);
       } else {
         errorCount++;
         logError(job.contactId, job.sequenceStep, err.message);
-        await updateStatus(job.contactId, "FAILED");
+        // updateStatus only called on permanent failure — all other status writes
+        // are handled inside writeResults to minimize HubSpot API calls
+        await updateStatus(job.contactId, 'FAILED');
       }
     }
   } finally {
@@ -1182,16 +1224,16 @@ function removeDashes(text) {
 }
 function removeMarkdown(text) {
   return text
-    .replace(/\*\*(.+?)\*\*/g, '$1')                                    // **bold**
-    .replace(/\*(.+?)\*/g, '$1')                                         // *italic*
-    .replace(/__([^_\n]+?)__/g, '$1')                                    // __bold__
-    .replace(/(?<![a-zA-Z0-9])_([^_\n]+?)_(?![a-zA-Z0-9])/g, '$1')    // _italic_ (not mid-word)
-    .replace(/`(.+?)`/g, '$1')                                           // `code`
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/__([^_\n]+?)__/g, '$1')
+    .replace(/(?<![a-zA-Z0-9])_([^_\n]+?)_(?![a-zA-Z0-9])/g, '$1')
+    .replace(/`(.+?)`/g, '$1')
     .trim();
 }
 function removeSignature(text) {
   return text
-    .replace(/\n+\s*(Scott|Pedowitz|Scott|Benedetti)\s*$/i, '')
+    .replace(/\n+\s*(Scott|Pedowitz)\s*$/i, '')
     .replace(/\n+\s*(Best|Best regards|Thanks|Thank you|Regards|Sincerely|Cheers|Warm regards)[^\n]*/gi, '')
     .trim();
 }
@@ -1201,6 +1243,13 @@ function sanitizeUrls(text) {
 
 // =============================
 // CLAUDE LOGIC
+// OPTIMIZED: prior emails trimmed to 300-char excerpts
+//   - Subject lines are the primary dedup signal (already passed separately)
+//   - 300-char excerpt catches angle/framing repeats without full body overhead
+//   - Saves ~300-350 tokens per prior step; steps 6-10 see the biggest benefit
+// OPTIMIZED: max_tokens reduced 1500 -> 1000
+//   - Target output is 40-85 words (~200-350 tokens including subject + HTML)
+//   - 1000 tokens is still 3x headroom; 1500 was unnecessary
 // =============================
 async function runClaude(job) {
   const SEQUENCE_STEP = job.sequenceStep || 1;
@@ -1250,16 +1299,22 @@ async function runClaude(job) {
     }
   }
 
-  // Prior emails — pass full text for deduplication AND collect prior subjects
+  // OPTIMIZED: 300-char excerpts instead of full prior email bodies
+  // Rationale: subject lines already carry the primary dedup signal.
+  // Excerpts (opening sentence + angle) are sufficient to prevent framing repeats.
+  // Full bodies at step 9 added ~1,400-1,600 tokens with minimal dedup benefit.
   const priorEmailsText = [];
   const priorSubjects = [];
   for (let i = 1; i < SEQUENCE_STEP; i++) {
     const bodyField = job[`industry_ai_nurture_claude_text_em${i}`];
     const subjectField = job[`industry_ai_nurture_subject_line_em${i}`];
-    if (bodyField) priorEmailsText.push(`EMAIL ${i}:\n${bodyField}`);
+    if (bodyField) {
+      const excerpt = bodyField.slice(0, 300).replace(/\s+/g, ' ').trim();
+      priorEmailsText.push(`EMAIL ${i} [excerpt]: ${excerpt}…`);
+    }
     if (subjectField) priorSubjects.push(`Email ${i}: "${subjectField}"`);
   }
-  const priorEmailsBlock = priorEmailsText.length ? priorEmailsText.join("\n\n---\n\n") : "N/A";
+  const priorEmailsBlock = priorEmailsText.length ? priorEmailsText.join("\n\n") : "N/A";
   const priorSubjectsBlock = priorSubjects.length
     ? `PRIOR SUBJECT LINES (your new subject MUST NOT start with the same first word as any of these, and must be structurally and semantically distinct from all of them):\n${priorSubjects.join('\n')}`
     : "No prior subject lines yet.";
@@ -1315,16 +1370,8 @@ ${openingStyleInstruction}
     ? `RE-ENGAGEMENT INSTRUCTION:\n${stepConfig.reEngagementNote}`
     : '';
 
-  // ─────────────────────────────────────────────────────────────
-  // AEO ENFORCEMENT
-  // Steps with aeoContext: MUST include buyer visibility concept.
-  // Steps without: explicitly suppressed so it never bleeds in.
-  // Keyword check after generation triggers retry if absent.
-  // ─────────────────────────────────────────────────────────────
   const aeoRequired = !!stepConfig.aeoContext;
 
-  // Keywords we scan for to confirm AEO appeared in the output.
-  // Plain-language only — Claude is forbidden from using "AEO"/"AXO" in body.
   const AEO_CHECK_PHRASES = [
     'chatgpt', 'perplexity', 'ai overview', 'ai-generated', 'ai generated',
     'answer', 'shortlist', 'asking an ai', 'asking a tool', 'invisible to',
@@ -1337,12 +1384,10 @@ ${openingStyleInstruction}
     return AEO_CHECK_PHRASES.some(p => lower.includes(p));
   }
 
-  // Banned phrases for this step
   const avoidPhrasesBlock = stepConfig.avoidPhrases && stepConfig.avoidPhrases.length
     ? `BANNED PHRASES — never use any of these in this email:\n${stepConfig.avoidPhrases.map(p => `- "${p}"`).join('\n')}`
     : '';
 
-  // AEO mandatory block — placed FIRST in userContent so it gets full attention
   const aeoMandatoryBlock = aeoRequired
     ? `⚠️ MANDATORY REQUIREMENT — READ THIS BEFORE WRITING ANYTHING ELSE ⚠️
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1402,11 +1447,7 @@ Primary Pain Point for This Email:
 AI Opportunity for This Vertical:
 ${persona.aiOpportunity}
 
-Industry Benchmarks — STRICT RULES:
-- Use ONE stat from the list below. One only.
-- Use it verbatim. Do not paraphrase, round, or approximate.
-- Do not blend two stats into one sentence.
-- Drop it casually in the prose, the way you'd mention it in conversation. Never prefaced with "According to" or "Research shows."
+Industry Benchmarks (weave one naturally into the prose — never list them):
 ${persona.stats}
 
 Tone Guidance:
@@ -1473,7 +1514,7 @@ Body:
       "https://api.anthropic.com/v1/messages",
       {
         model: "claude-sonnet-4-20250514",
-        max_tokens: 1500,
+        max_tokens: 1000,
         temperature: 0.75,
         system: `You are Scott Benedetti, Partner and Executive Vice President of The Pedowitz Group. You did a little homework on this person before writing. You checked their company news, their blog, maybe their LinkedIn. Now you're writing them a short note — the way a smart, confident peer would, not a polished executive. Contractions are fine. Incomplete sentences are fine. Starting with "And" or "But" is fine. When you have a company signal to work from, open with "I saw", "I noticed", or "I came across" to make it feel researched and specific. After the opening, write like you're talking to someone you already know a little. Direct. Warm but not soft. No corporate polish. No sign-off. Never use the word AI in the subject line. When the prompt says a requirement is MANDATORY, treat it as non-negotiable — the email is incomplete without it.`,
         messages: [{ role: "user", content: userContent }]
@@ -1511,15 +1552,19 @@ Body:
 
 // =============================
 // HUBSPOT WRITE-BACK
+// OPTIMIZED: status parameter merged in — eliminates the separate IN_PROGRESS
+// and SENT calls, reducing HubSpot PATCH calls per job from 3 to 1.
+//
 // Properties (confirmed names):
 //   industry_ai_nurture_subject_line_em1  through em10  (single-line text)
 //   industry_ai_nurture_em1               through em10  (rich text / HTML)
 //   industry_ai_nurture_claude_text_em1   through em9   (multi-line text)
+//   ai_email_step_status                               (dropdown)
 // =============================
-async function writeResults(contactId, { subject, bodyText }, sequenceStep = 1) {
+async function writeResults(contactId, { subject, bodyText }, sequenceStep = 1, status = 'SENT') {
   const bodyHtml = bodyText
     .replace(/\r\n/g, "\n")
-    .split(/\n{2+}/)
+    .split(/\n{2,}/)
     .map(p => `<p style="margin:0 0 16px;">${p.replace(/\n/g, "<br>")}</p>`)
     .join("\n");
 
@@ -1529,7 +1574,8 @@ async function writeResults(contactId, { subject, bodyText }, sequenceStep = 1) 
       properties: {
         [`industry_ai_nurture_subject_line_em${sequenceStep}`]: subject,
         [`industry_ai_nurture_em${sequenceStep}`]: bodyHtml,
-        [`industry_ai_nurture_claude_text_em${sequenceStep}`]: bodyText
+        [`industry_ai_nurture_claude_text_em${sequenceStep}`]: bodyText,
+        ai_email_step_status: status
       }
     }
   );
@@ -1537,6 +1583,8 @@ async function writeResults(contactId, { subject, bodyText }, sequenceStep = 1) 
 
 // =============================
 // STATUS UPDATE
+// Called only for permanent failures (FAILED status).
+// All other status writes are handled inside writeResults.
 // =============================
 async function updateStatus(contactId, status) {
   try {
